@@ -1,15 +1,9 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "dist/main.serverless.js",
-      "use": "@vercel/node"
-    }
+    { "src": "dist/main.serverless.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/main.serverless.js"
-    }
+    { "src": "/(.*)", "dest": "dist/main.serverless.js" }
   ]
 }
