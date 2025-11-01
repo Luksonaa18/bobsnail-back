@@ -2,12 +2,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "."  // include everything in the project root
+    "rootDir": "." 
   },
   "include": [
     "src/**/*",
     "admin.ts",
-    "uploads/**/*"
+    "uploads/**/*",
+    "src/main.serverless.ts"
   ],
   "exclude": ["node_modules", "test", "**/*spec.ts"]
 }
