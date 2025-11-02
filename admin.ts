@@ -1,6 +1,6 @@
 import { connect, model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 import { UserSchema } from './src/auth/schema/user.schema';
+import * as bcrypt from 'bcrypt';
 
 async function createAdmin() {
   await connect('mongodb://localhost:27017/eccomerce');

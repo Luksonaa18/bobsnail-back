@@ -8,6 +8,8 @@ import {
   Param,
   Query,
   UseGuards,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -16,10 +18,16 @@ import { RolesGuard } from 'src/auth/guards/role.guard';
 import { Product } from './schema/products.schema';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductDto } from './dto/product.dto';
+import { AwsService } from '../aws/aws.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly awsService: AwsService, // inject S3 service
+  ) {}
+
   @Get()
   findAll(
     @Query('search') search?: string,
@@ -43,18 +51,38 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
-  create(@Body() body: CreateProductDto): Promise<Product> {
-    return this.productsService.create(body);
+  @UseInterceptors(FilesInterceptor('images'))
+  async create(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: CreateProductDto,
+  ): Promise<Product> {
+    const imageUrls = [];
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const url = await this.awsService.uploadFile(file);
+        imageUrls.push(url);
+      }
+    }
+    return this.productsService.create({ ...body, images: imageUrls });
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put(':id')
-  update(
+  @UseInterceptors(FilesInterceptor('images'))
+  async update(
     @Param('id') id: string,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() body: UpdateProductDto,
   ): Promise<Product> {
-    return this.productsService.update(id, body);
+    const imageUrls = body.images || [];
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const url = await this.awsService.uploadFile(file);
+        imageUrls.push(url);
+      }
+    }
+    return this.productsService.update(id, { ...body, images: imageUrls });
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -9,7 +9,7 @@ import { CartModule } from './cart/cart.module';
 import { UserModule } from './user/user.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { EmailModule } from './email/email.module';
-
+import { AwsModule } from './aws/aws.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -35,6 +35,7 @@ import { EmailModule } from './email/email.module';
     UserModule,
     CheckoutModule,
     EmailModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
