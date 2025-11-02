@@ -1,13 +1,13 @@
 export class CreateCheckoutDto {
-  user: {
+  user!: {
     name: string;
     email: string;
   };
-  cartItems: {
+  cartItems!: {
     _id: string;
     name: string;
     price: number;
     quantity: number;
   }[];
-  total: number;
+  total!: number;
 }

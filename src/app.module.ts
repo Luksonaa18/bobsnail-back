@@ -10,7 +10,6 @@ import { UserModule } from './user/user.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { EmailModule } from './email/email.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -23,7 +22,7 @@ import { EmailModule } from './email/email.module';
           connection.on('connected', () =>
             console.log('Mongoose connected successfully'),
           );
-          connection.on('error', (err) =>
+          connection.on('error', (err: Error) =>
             console.error('Mongoose connection error:', err),
           );
           return connection;
